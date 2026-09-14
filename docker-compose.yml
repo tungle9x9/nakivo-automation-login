@@ -1,0 +1,56 @@
+﻿# Distributed Selenium Grid Architecture for Containerized Test Execution
+# Network Topology:
+#   [nakivo-test-runner] ---> [selenium-hub:4444] ---> [chrome-node]
+#            |
+#            +---> Host NAKIVO Director via https://host.docker.internal:4443/c/main
+
+version: '3.8'
+
+services:
+  selenium-hub:
+    image: selenium/hub:4.18.1
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"  # Web UI & Grid Endpoint (does NOT conflict with host port 4443)
+    networks:
+      - test-network
+
+  chrome-node:
+    image: selenium/node-chrome:4.18.1
+    container_name: chrome-node
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=4
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - test-network
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nakivo-test-runner
+    depends_on:
+      - selenium-hub
+      - chrome-node
+    environment:
+      - GRID_URL=http://selenium-hub:4444/wd/hub
+      - NAKIVO_URL=https://host.docker.internal:4443/c/main
+      - HEADLESS=true
+    volumes:
+      - ./reports:/app/reports
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - test-network
+    command: ["--grid", "http://selenium-hub:4444/wd/hub", "--url", "https://host.docker.internal:4443/c/main"]
+
+networks:
+  test-network:
+    driver: bridge

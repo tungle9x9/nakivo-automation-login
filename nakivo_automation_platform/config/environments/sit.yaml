@@ -1,0 +1,12 @@
+﻿env: sit
+director_url: "https://sit-nakivo.internal.corp:4443"
+ui_path: "/c/main"
+api_path: "/c/router"
+
+timeout:
+  explicit: 15
+  page_load: 45
+
+credentials:
+  admin_username: ""
+  admin_password: ""

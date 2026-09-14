@@ -1,0 +1,12 @@
+﻿env: local
+director_url: "https://localhost:4443"
+ui_path: "/c/main"
+api_path: "/c/router"
+
+timeout:
+  explicit: 10
+  page_load: 30
+
+credentials:
+  admin_username: ""
+  admin_password: ""

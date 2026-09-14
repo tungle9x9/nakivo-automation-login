@@ -1,0 +1,8 @@
+browser: edge
+headless: true
+window_size: "1920,1080"
+accept_insecure_certs: true
+arguments:
+  - "--ignore-certificate-errors"
+  - "--allow-insecure-localhost"
+  - "--no-sandbox"

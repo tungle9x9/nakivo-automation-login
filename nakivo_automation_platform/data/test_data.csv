@@ -1,0 +1,13 @@
+﻿scenario,email,password,expected_success,expected_error_contains,description
+valid_admin,admin,,True,,Valid admin credentials
+email_login_rejection,admin@company.com,DummyPassword123!,False,Incorrect credentials,Email format rejected by username-only system
+
+invalid_user,unknown_user@company.com,Secret999!,False,Invalid username or password,Unregistered user login
+wrong_password,admin,WrongPasswordXYZ,False,Invalid username or password,Valid user with wrong password
+empty_email,,DummyPassword123!,False,Email is required,Missing email address
+empty_password,admin,,False,Password is required,Missing password
+both_empty,,,False,Sign in disabled or credentials required,Both fields empty
+malformed_email_no_at,testuser.com,DummyPassword123!,False,Please enter a valid email address,Invalid email format lacking @
+malformed_email_no_tld,testuser@nodomain,DummyPassword123!,False,Please enter a valid email address,Invalid email format missing domain
+long_email,this_is_an_extremely_long_email_address_specifically_designed_to_exceed_the_standard_two_hundred_and_fifty_five_character_limit_for_rfc_compliance_testing_purposes_and_security_boundary_checks_in_web_applications_and_enterprise_software_suite_1234567890@nakivotest.com,DummyPassword123!,False,Email address must not exceed 255 characters,Excessively long email > 255 characters
+long_password,admin,ThisIsAnExcessivelyLongPasswordCreatedForEdgeCaseTestingToValidateThatPasswordsExceedingOneHundredCharactersAreHandledProperlyWithoutCrashing1234567890!,False,Password must not exceed 100 characters,Excessively long password > 100 characters
